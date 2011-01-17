@@ -1,23 +1,22 @@
-YUI().use("node", function(Y) {
-	var node = Y.one('#sudoku');
-	var mainTable = Y.Node.create('<table></table>');
-	window.document.body.oncontextmenu=function(){return false;} 
-	create_main_tr = function (row) {
-		var tr = Y.Node.create('<tr></tr>');
-		for (var i=0;i<3;i++) {
+YUI().use("node", function (Y) {
+	window.document.body.oncontextmenu = function () {
+		return false;
+	};
+	var node = Y.one('#sudoku'), mainTable = Y.Node.create('<table></table>'), create_main_tr = function (row) {
+		var tr = Y.Node.create('<tr></tr>'), i;
+		for (i = 0; i < 3; (i++)) {
 			var td = Y.Node.create('<td></td>');
 			td.appendChild(create_block_cells(row,i));
 			tr.appendChild(td);
 		}
 		return tr;
-	}
+	};
 	
 	var create_block_cells = function (block_row,block_col) {
-		var table = Y.Node.create('<table border="1"></table>');
-		var block_num = block_row * 3 + block_col + 1;
+		var table = Y.Node.create('<table border="1"></table>'), block_num = block_row * 3 + block_col + 1;
 		for (var i = 0; i < 3; i++) {
 			var tr = Y.Node.create('<tr></tr>');
-			for (var j=0; j < 3; j++) {
+			for (var j = 0; j < 3; j++) {
 				var td = Y.Node.create('<td></td>');
 				var data = {
 					block: block_num,
@@ -26,9 +25,9 @@ YUI().use("node", function(Y) {
 					value: 0
 				};
 				td.addClass('cell');
-				td.addClass('block_'+data.block);
-				td.addClass('row_'+data.row);
-				td.addClass('col_'+data.col);
+				td.addClass('block_' + data.block);
+				td.addClass('row_' + data.row);
+				td.addClass('col_' + data.col);
 				td.setData('loc',data);
 				create_cell_options(td);
 				tr.appendChild(td);
@@ -36,28 +35,28 @@ YUI().use("node", function(Y) {
 			table.appendChild(tr);
 		}
 		return table;
-	}
+	};
 	
 	var option_dblclick = function(e) {
 		select_option(e.target);
 		e.halt();
 		return true;
-	}
+	};
 	
 	var option_rightclick = function(e) {
-		if (e.target.get('text') == '') {
+		if (e.target.get('text') === '') {
 			e.target.set('text',e.target.getData('option'));
 		} else {
 			e.target.set('text','');
 		}
-	}
+	};
 	
 	var select_option = function(opt) {
 		var value = opt.get('text');
-		if (value == '') return;
+		if (value === '') {return;}
 		var cell = opt.ancestor('.cell');
 		var loc = cell.getData('loc');
-		loc.value = parseInt(value);
+		loc.value = parseInt(value,10);
 		cell.setContent('');
 		cell.set('text',value);
 		
@@ -65,28 +64,28 @@ YUI().use("node", function(Y) {
 		remove_other_options(loc);
 		
 		cell.on('dblclick',cell_dblclick);
-	}
+	};
 	
 	var remove_other_options = function (loc) {
-		node.all('td.cell.block_'+loc.block+' td.option_'+loc.value).each(function(n) {
+		node.all('td.cell.block_' + loc.block + ' td.option_' + loc.value).each(function(n) {
 			n.set('text','');
 			Y.detach('contextmenu',option_rightclick,n);
 		});
-		node.all('td.cell.row_'+loc.row+' td.option_'+loc.value).each(function(n) {
+		node.all('td.cell.row_' + loc.row + ' td.option_' + loc.value).each(function(n) {
 			n.set('text','');
 			Y.detach('contextmenu',option_rightclick,n);
 		});
-		node.all('td.cell.col_'+loc.col+' td.option_'+loc.value).each(function(n) {
+		node.all('td.cell.col_' + loc.col + ' td.option_' + loc.value).each(function(n) {
 			n.set('text','');
 			Y.detach('contextmenu',option_rightclick,n);
 		});
-	}
+	};
 	
 	var cell_dblclick = function(e) {
 		var cell = e.target;
 	   
 		if (!cell.hasClass('cell')) {
-			Y.log(e)
+			Y.log(e);
 			// make sure the event is on the cell
 			return false;
 		}
@@ -99,12 +98,12 @@ YUI().use("node", function(Y) {
 		//recreate_cells('td.cell.row_'+loc.row);
 		//recreate_cells('td.cell.col_'+loc.col);
 		node.setStyle('display', null);
-	}
+	};
 	
 	var recreate_cells = function (selector) {
 		node.all(selector).each(function (n) {
 			var loc = n.getData('loc');
-			if (loc.value == 0) {
+			if (loc.value === 0) {
 				n.setContent('');
 				create_cell_options(n);
 			}
@@ -112,11 +111,11 @@ YUI().use("node", function(Y) {
 		
 		node.all(selector).each(function (n) {
 			var loc = n.getData('loc');
-			if (loc.value != 0) {
+			if (loc.value !== 0) {
 				remove_other_options(loc);
 			}
 		});
-	}
+	};
 	
 	var create_cell_options = function (cell) {
 		var table = Y.Node.create('<table/>');
@@ -136,7 +135,7 @@ YUI().use("node", function(Y) {
 			table.appendChild(tr);
 		}
 		cell.appendChild(table);
-	}
+	};
 	
 	
 	
