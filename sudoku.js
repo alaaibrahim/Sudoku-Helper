@@ -94,7 +94,7 @@ YUI().use("node", function (Y) {
     };
 
     cell_dblclick = function (e) {
-        var cell = e.targeti, loc;
+        var cell = e.target, loc;
 
         if (!cell.hasClass('cell')) {
             Y.log(e);
